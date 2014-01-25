@@ -68,11 +68,11 @@ module ActiveRecord::Turntable::Migration
     end
 
     shards_conf = shards.map do |shard|
-      config[Rails.env||"development"]["shards"][shard]
+      config[ActiveRecord::Turntable::RackupFramework.env||"development"]["shards"][shard]
     end
-    seqs = config[Rails.env||"development"]["seq"]
+    seqs = config[ActiveRecord::Turntable::RackupFramework.env||"development"]["seq"]
     shards_conf += seqs.values
-    shards_conf << config[Rails.env||"development"]
+    shards_conf << config[ActiveRecord::Turntable::RackupFramework.env||"development"]
     shards_conf.each_with_index do |conf, idx|
       @@current_shard = (shards[idx] || seqs.keys[idx - shards.size] || "master")
       ActiveRecord::Base.establish_connection(conf)

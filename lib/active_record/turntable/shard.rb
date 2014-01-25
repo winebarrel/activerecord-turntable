@@ -1,7 +1,7 @@
 module ActiveRecord::Turntable
   class Shard
     DEFAULT_CONFIG = {
-      "connection" => (defined?(Rails) ? Rails.env : "development")
+      "connection" => (defined?(ActiveRecord::Turntable::RackupFramework) ? ActiveRecord::Turntable::RackupFramework.env : "development")
     }.with_indifferent_access
 
     def initialize(shard_spec)
@@ -28,7 +28,7 @@ module ActiveRecord::Turntable
     def retrieve_connection_pool
       ActiveRecord::Base.turntable_connections[name] ||=
         begin
-          config = ActiveRecord::Base.configurations[Rails.env]["shards"][name]
+          config = ActiveRecord::Base.configurations[ActiveRecord::Turntable::RackupFramework.env]["shards"][name]
           raise ArgumentError, "Unknown database config: #{name}, have #{ActiveRecord::Base.configurations.inspect}" unless config
           ActiveRecord::ConnectionAdapters::ConnectionPool.new(spec_for(config))
         end
