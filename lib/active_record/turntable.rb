@@ -55,4 +55,5 @@ module ActiveRecord::Turntable
   end
 
   require "active_record/turntable/railtie" if defined?(Rails)
+  require "active_record/turntable/padrinotie" if defined?(Padrino)
 end
