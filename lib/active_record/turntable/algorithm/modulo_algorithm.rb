@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 module ActiveRecord::Turntable::Algorithm
-  class Modulo < Base
+  class ModuloAlgorithm < Base
     def initialize(config)
       @config = config
     end
