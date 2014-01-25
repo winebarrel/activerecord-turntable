@@ -7,7 +7,6 @@ module ActiveRecord::Turntable
     Padrino.before_load do
       ActiveRecord::Base.send(:include, ActiveRecord::Turntable)
 
-      Padrino::Generators.load_components!
       require 'generators/padrino/turntable/install_generators'
     end
     # # Swap QueryCache Middleware
