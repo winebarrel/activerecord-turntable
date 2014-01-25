@@ -1,7 +1,9 @@
-require 'padrino-gen'
+require 'thor/group'
 
 module Padrino
   module Generators
+    Padrino::Generators.load_components!
+
     class Turntable < Thor::Group
       Padrino::Generators.add_generator(:turntable, self)
 
