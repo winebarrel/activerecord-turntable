@@ -36,11 +36,12 @@ module ActiveRecord::Turntable
 
     def spec_for(config)
       begin
-        require "active_record/connection_adapters/#{config['adapter']}_adapter"
+        adapter = config['adapter'] || config[:adapter]
+        require "active_record/connection_adapters/#{adapter}_adapter"
       rescue LoadError => e
-        raise "Please install the #{config['adapter']} adapter: `gem install activerecord-#{config['adapter']}-adapter` (#{e})"
+        raise "Please install the #{adapter} adapter: `gem install activerecord-#{adapter}-adapter` (#{e})"
       end
-      adapter_method = "#{config['adapter']}_connection"
+      adapter_method = "#{adapter}_connection"
       ActiveRecord::Base::ConnectionSpecification.new(config, adapter_method)
     end
   end
