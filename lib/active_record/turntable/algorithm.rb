@@ -6,7 +6,7 @@ module ActiveRecord::Turntable
       autoload :Base
       autoload :RangeAlgorithm
       autoload :RangeBsearchAlgorithm
-      autoload :Modulo
+      autoload :ModuloAlgorithm
     end
   end
 end
