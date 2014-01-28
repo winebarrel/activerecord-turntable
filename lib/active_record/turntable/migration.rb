@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module ActiveRecord::Turntable::Migration
   extend ActiveSupport::Concern
 
@@ -72,6 +73,8 @@ module ActiveRecord::Turntable::Migration
     end
     seqs = config[ActiveRecord::Turntable::RackupFramework.env||"development"]["seq"]
     shards_conf += seqs.values
+
+    # SHOW FULL FIELDS FROM `users` を実行してテーブルの情報を取得するためにデフォルトのデータベースも追加する
     shards_conf << config[ActiveRecord::Turntable::RackupFramework.env||"development"]
     shards_conf.each_with_index do |conf, idx|
       @@current_shard = (shards[idx] || seqs.keys[idx - shards.size] || "master")
