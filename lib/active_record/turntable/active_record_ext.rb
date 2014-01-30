@@ -13,7 +13,7 @@ module ActiveRecord::Turntable
 
     included do
       include Transactions
-#      ActiveRecord::ConnectionAdapters::AbstractAdapter.send(:include, Sequencer) # @@@ @@@ default_sequence_name が勝手にはえるのでコメントアウト
+      ActiveRecord::ConnectionAdapters::AbstractAdapter.send(:include, Sequencer)
       ActiveRecord::ConnectionAdapters::AbstractAdapter.send(:include, AbstractAdapter)
       ActiveRecord::LogSubscriber.send(:include, LogSubscriber)
       ActiveRecord::Persistence.send(:include, Persistence)
