@@ -13,9 +13,9 @@ module ActiveRecord::Turntable
       @options = options.with_indifferent_access
       @shards = {}.with_indifferent_access
 
-      # setup sequencer
-      if (seq = (@options[:seq] || @config[:seq])) && seq[:type] == :mysql
-        @seq_shard = SeqShard.new(seq)
+      # setup sequencer                                                          
+      if (seq = (@options[:seq] || @config["seq"])) && seq.values.first["seq_type"] == "mysql"
+        @seq_shard = SeqShard.new(seq.values.first)
       end
 
       # setup shards

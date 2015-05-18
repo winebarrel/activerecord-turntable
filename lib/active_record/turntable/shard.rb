@@ -39,7 +39,8 @@ module ActiveRecord::Turntable
         klass.abstract_class = true
       end
       klass.remove_connection
-      klass.establish_connection ActiveRecord::Base.connection_pool.spec.config[:shards][name].with_indifferent_access
+      shard_or_seq = @config["seq_type"] ? :seq : :shards
+      klass.establish_connection ActiveRecord::Base.connection_pool.spec.config[shard_or_seq][name].with_indifferent_access
       klass
     end
   end
