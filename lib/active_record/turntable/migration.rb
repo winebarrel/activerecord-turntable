@@ -15,6 +15,7 @@ module ActiveRecord::Turntable::Migration
     end
     base.class_eval do
       class_inheritable_accessor :target_shards
+      class_inheritable_accessor :target_seqs
     end
     ::ActiveRecord::ConnectionAdapters::AbstractAdapter.send(:include, SchemaStatementsExt)
   end
@@ -23,6 +24,7 @@ module ActiveRecord::Turntable::Migration
   included do
     extend ShardDefinition
     class_attribute :target_shards
+    class_attribute :target_seqs
     def announce_with_turntable(message)
       announce_without_turntable("#{message} - #{get_current_shard}")
     end
@@ -49,6 +51,16 @@ module ActiveRecord::Turntable::Migration
             end
           end
         end
+      (self.target_seqs ||= []) <<
+        if cluster_names.first == :all
+          config['clusters'].map do |name, cluster_conf|
+            cluster_conf["seq"]["connection"]
+          end
+        else
+          cluster_names.map do |cluster_name|
+            config['clusters'][cluster_name]["seq"]["connection"]
+          end
+        end
     end
 
     def shards(*connection_names)
@@ -64,20 +76,21 @@ module ActiveRecord::Turntable::Migration
     config = ActiveRecord::Base.configurations
     @@current_shard = nil
     shards = (self.class.target_shards||=[]).flatten.uniq.compact
-    if self.class.target_shards.blank?
+    seqs = (self.class.target_seqs||=[]).flatten.uniq.compact
+    if self.class.target_shards.blank? || self.class.target_seqs.blank?
       return migrate_without_turntable(direction)
     end
 
     shards_conf = shards.map do |shard|
       config[ActiveRecord::Turntable::RackupFramework.env||"development"]["shards"][shard]
     end
-    seqs = config[ActiveRecord::Turntable::RackupFramework.env||"development"]["seq"]
-    shards_conf += seqs.values
+    seqs_conf = config[ActiveRecord::Turntable::RackupFramework.env||"development"]["seq"].select { |key, val| seqs.include?(key) }
+    shards_conf += seqs_conf.values
 
     # SHOW FULL FIELDS FROM `users` を実行してテーブルの情報を取得するためにデフォルトのデータベースも追加する
     shards_conf << config[ActiveRecord::Turntable::RackupFramework.env||"development"]
     shards_conf.each_with_index do |conf, idx|
-      @@current_shard = (shards[idx] || seqs.keys[idx - shards.size] || "master")
+      @@current_shard = (shards[idx] || seqs_conf.keys[idx - shards.size] || "master")
       ActiveRecord::Base.establish_connection(conf)
       if !ActiveRecord::Base.connection.table_exists?(ActiveRecord::Migrator.schema_migrations_table_name())
         ActiveRecord::Base.connection.initialize_schema_migrations_table
