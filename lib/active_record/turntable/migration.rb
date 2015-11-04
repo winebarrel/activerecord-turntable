@@ -39,28 +39,17 @@ module ActiveRecord::Turntable::Migration
   module ShardDefinition
     def clusters(*cluster_names)
       config = ActiveRecord::Base.turntable_config
-      (self.target_shards ||= []) <<
-        if cluster_names.first == :all
-          config['clusters'].map do |name, cluster_conf|
-            cluster_conf["shards"].map {|shard| shard["connection"]}
-          end
-        else
-          cluster_names.map do |cluster_name|
-            config['clusters'][cluster_name]["shards"].map do |shard|
-              shard["connection"]
-            end
-          end
+      if cluster_names.first == :all
+        config['clusters'].map do |name, cluster_conf|
+          (self.target_shards ||= []) << cluster_conf["shards"].map { |shard| shard["connection"] }
+          (self.target_seqs ||= []) << cluster_conf["seq"]["connection"]
         end
-      (self.target_seqs ||= []) <<
-        if cluster_names.first == :all
-          config['clusters'].map do |name, cluster_conf|
-            cluster_conf["seq"]["connection"]
-          end
-        else
-          cluster_names.map do |cluster_name|
-            config['clusters'][cluster_name]["seq"]["connection"]
-          end
+      else
+        cluster_names.map do |cluster_name|
+          (self.target_shards ||= []) << config['clusters'][cluster_name]["shards"].map { |shard| shard["connection"] }
+          (self.target_seqs ||= []) << config['clusters'][cluster_name]["seq"]["connection"]
         end
+      end
     end
 
     def shards(*connection_names)
