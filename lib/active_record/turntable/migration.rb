@@ -65,7 +65,7 @@ module ActiveRecord::Turntable::Migration
     config = ActiveRecord::Base.configurations
     @@current_shard = nil
     shards = (self.class.target_shards||=[]).flatten.uniq.compact
-    if self.class.target_shards.blank?
+    if self.class.target_shards.blank? || self.class.target_seqs.blank?
       return migrate_without_turntable(direction)
     end
     shards_conf = shards.map do |shard|
