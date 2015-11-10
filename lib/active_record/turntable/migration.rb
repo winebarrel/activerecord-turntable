@@ -64,10 +64,11 @@ module ActiveRecord::Turntable::Migration
   def migrate_with_turntable(direction)
     config = ActiveRecord::Base.configurations
     @@current_shard = nil
-    shards = (self.class.target_shards||=[]).flatten.uniq.compact
     if self.class.target_shards.blank? || self.class.target_seqs.blank?
       return migrate_without_turntable(direction)
     end
+
+    shards = (self.class.target_shards||=[]).flatten.uniq.compact
     shards_conf = shards.map do |shard|
       config[ActiveRecord::Turntable::RackupFramework.env||"development"]["shards"][shard]
     end
