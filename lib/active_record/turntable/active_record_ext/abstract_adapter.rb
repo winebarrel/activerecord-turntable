@@ -7,7 +7,7 @@ module ActiveRecord::Turntable
         protected
 
         if ActiveRecord::VERSION::STRING < '3.1'
-          def log_without_newrelic_instrumentation(sql, name)
+          def log(sql, name)
             name ||= "SQL"
             @instrumenter.instrument("sql.active_record",
                                      :sql => sql, :name => name, :connection_id => object_id,
@@ -20,7 +20,7 @@ module ActiveRecord::Turntable
             raise translate_exception(e, message)
           end
         else
-          def log_without_newrelic_instrumentation(sql, name = "SQL", binds = [])
+          def log(sql, name = "SQL", binds = [])
             @instrumenter.instrument(
                                      "sql.active_record",
                                      :sql           => sql,
@@ -36,8 +36,9 @@ module ActiveRecord::Turntable
             raise exception
           end
         end
-        if not defined?(::NewRelic)
-          alias_method :log, :log_without_newrelic_instrumentation
+        if defined?(::NewRelic)
+          alias_method :log_without_newrelic_instrumentation, :log
+          alias_method :log, :log_with_newrelic_instrumentation
         end
       end
 
