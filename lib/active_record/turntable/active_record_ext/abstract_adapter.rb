@@ -37,8 +37,8 @@ module ActiveRecord::Turntable
           end
         end
 
-        alias_method_chain :log, :newrelic_instrumentation if defined?(::NewRelic)
-
+        alias_method_chain :log, :newrelic_instrumentation if method_defined?(:log_with_newrelic_instrumentation)
+        
       end
 
       def turntable_shard_name=(name)
