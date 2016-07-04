@@ -36,10 +36,9 @@ module ActiveRecord::Turntable
             raise exception
           end
         end
-        if defined?(::NewRelic)
-          alias_method :log_without_newrelic_instrumentation, :log
-          alias_method :log, :log_with_newrelic_instrumentation
-        end
+
+        alias_method_chain :log, :newrelic_instrumentation if defined?(::NewRelic)
+
       end
 
       def turntable_shard_name=(name)
