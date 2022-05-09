@@ -7,7 +7,7 @@ module ActiveRecord::Turntable
 
     attr_accessor :cluster, :name, :slaves
 
-    def initialize(cluster, name = defined?(Rails) ? Rails.env : "development", slaves = [])
+    def initialize(cluster, name = defined?(ActiveRecord::Turntable::RackupFramework) ? ActiveRecord::Turntable::RackupFramework.env : "development", slaves = [])
       @cluster = cluster
       @name = name
       @slaves = slaves.map { |s| SlaveShard.new(cluster, s) }

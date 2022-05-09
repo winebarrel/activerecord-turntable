@@ -1,6 +1,6 @@
 module ActiveRecord::Turntable
   class SeqShard < Shard
-    def initialize(name = defined?(Rails) ? Rails.env : "development")
+    def initialize(name = defined?(ActiveRecord::Turntable::RackupFramework) ? ActiveRecord::Turntable::RackupFramework.env : "development")
       super(nil, name)
     end
 

@@ -11,7 +11,7 @@ db_namespace = namespace :db do
       end
     end
 
-    desc "Create current turntable databases config/database.yml for the current Rails.env"
+    desc "Create current turntable databases config/database.yml for the current ActiveRecord::Turntable::RackupFramework.env"
     task :create do
       unless ENV["DATABASE_URL"]
         ActiveRecord::Tasks::DatabaseTasks.create_current_turntable_cluster
@@ -24,7 +24,7 @@ db_namespace = namespace :db do
       end
     end
 
-    desc "Drops current turntable databases for the current Rails.env"
+    desc "Drops current turntable databases for the current ActiveRecord::Turntable::RackupFramework.env"
     task :drop do
       unless ENV["DATABASE_URL"]
         ActiveRecord::Tasks::DatabaseTasks.drop_current_turntable_cluster
@@ -35,7 +35,7 @@ db_namespace = namespace :db do
       # TODO: implement schema:cache:xxxx
       task :dump do
         require "active_record/schema_dumper"
-        current_config = ActiveRecord::Base.configurations[Rails.env]
+        current_config = ActiveRecord::Base.configurations[ActiveRecord::Turntable::RackupFramework.env]
         shard_configs = current_config["shards"]
         shard_configs.merge!(current_config["seq"]) if current_config["seq"]
         if shard_configs
@@ -54,7 +54,7 @@ db_namespace = namespace :db do
 
       desc "Load a schema.rb file into the database"
       task :load do
-        current_config = ActiveRecord::Base.configurations[Rails.env]
+        current_config = ActiveRecord::Base.configurations[ActiveRecord::Turntable::RackupFramework.env]
         shard_configs = current_config["shards"]
         shard_configs.merge!(current_config["seq"]) if current_config["seq"]
         if shard_configs
@@ -116,7 +116,7 @@ db_namespace = namespace :db do
     namespace :test do
       # desc "Empty the test database"
       task :purge do
-        current_config = ActiveRecord::Base.configurations[Rails.env]
+        current_config = ActiveRecord::Base.configurations[ActiveRecord::Turntable::RackupFramework.env]
         shard_configs = current_config["shards"]
         shard_configs.merge!(current_config["seq"]) if current_config["seq"]
         if shard_configs
