@@ -274,7 +274,7 @@ module ActiveRecord::Turntable
     end
 
     def spec
-      @spec ||= default_shard.connection_pool.spec
+      @spec ||= shards.values.first.connection_pool.spec
     end
 
     private
