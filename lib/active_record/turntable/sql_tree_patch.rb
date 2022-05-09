@@ -53,6 +53,7 @@ class SQLTree::Tokenizer
       when /\w/ then           tokenize_keyword(&block)
       when OPERATOR_CHARS then tokenize_operator(&block)
       when SQLTree.identifier_quote_char then tokenize_quoted_identifier(&block)
+      when SQLTree.identifier_quote_field_char then tokenize_identifier_with_quote(&block)
       end
     end
 
@@ -74,6 +75,14 @@ class SQLTree::Tokenizer
     else
       tokenize_keyword(&block)
     end
+  end
+
+  def tokenize_identifier_with_quote(&block)
+    next_char # skip identifier_quote_field_char
+    literal = current_char
+    literal << next_char while SQLTree.identifier_quote_field_char != peek_char
+    next_char # skip identifier_quote_field_char
+    handle_token(SQLTree::Token::Identifier.new(literal), &block)
   end
 end
 
