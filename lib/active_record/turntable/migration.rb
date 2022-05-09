@@ -43,7 +43,8 @@ module ActiveRecord::Turntable::Migration
     end
 
     def target_shard?(shard_name)
-      target_shards.blank? or target_shards.include?(shard_name)
+      return false if shard_name.present? && target_shards.blank?
+      shard_name.nil? or target_shards.blank? or target_shards.include?(shard_name)
     end
   end
 
