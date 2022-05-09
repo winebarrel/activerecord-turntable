@@ -16,15 +16,17 @@ module ActiveRecord::Turntable::Migration
 
   module ShardDefinition
     def clusters(*cluster_names)
-      config = ActiveRecord::Base.turntable_configuration
+      config = ActiveRecord::Base.turntable_config["clusters"]
+      cluster_names = config.keys if cluster_names.first == :all
       (self.target_shards ||= []).concat(
-        if cluster_names.first == :all
-          config.clusters.map(&:shards).flatten
-        else
           cluster_names.map do |cluster_name|
-            config.cluster(cluster_name).shards
+            config[cluster_name]["shards"].map { |shard| shard["connection"] }
           end.flatten
-        end
+      )
+      (self.target_seqs ||= []).concat(
+          cluster_names.map do |cluster_name|
+            config[cluster_name]["seq"].values.map { |seq| seq["connection"] }
+          end.flatten
       )
     end
 
@@ -45,6 +47,25 @@ module ActiveRecord::Turntable::Migration
     def target_shard?(shard_name)
       return false if shard_name.present? && target_shards.blank?
       shard_name.nil? or target_shards.blank? or target_shards.include?(shard_name)
+    end
+
+    def migrate(*args)
+      return migrate_without_turntable(*args) if target_shards.blank?
+
+      config = ActiveRecord::Base.configurations[ActiveRecord::Turntable::RackupFramework.env||"development"]
+      shard_conf = target_shards.map { |shard| [shard, config["shards"][shard]] }.to_h
+      seqs_conf = target_seqs.map { |seq| [seq, config["seq"][seq]] }.to_h
+
+      # SHOW FULL FIELDS FROM `users` を実行してテーブルの情報を取得するためにデフォルトのデータベースも追加する
+      {"master": config}.merge(shard_conf).merge(seqs_conf).each do |connection_name, database_config|
+        next if database_config["database"].blank?
+        ActiveRecord::Base.clear_active_connections!
+        ActiveRecord::Base.establish_connection(database_config)
+        ActiveRecord::Migration.current_shard = connection_name
+        migrate_without_turntable(*args)
+      end
+      ActiveRecord::Base.establish_connection config
+      ActiveRecord::Base.clear_active_connections!
     end
   end
 
