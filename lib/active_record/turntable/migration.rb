@@ -50,7 +50,7 @@ module ActiveRecord::Turntable::Migration
     end
 
     def migrate(*args)
-      return migrate_without_turntable(*args) if target_shards.blank?
+      return super(*args) if target_shards.blank?
 
       config = ActiveRecord::Base.configurations[ActiveRecord::Turntable::RackupFramework.env||"development"]
       shard_conf = target_shards.map { |shard| [shard, config["shards"][shard]] }.to_h
@@ -62,7 +62,7 @@ module ActiveRecord::Turntable::Migration
         ActiveRecord::Base.clear_active_connections!
         ActiveRecord::Base.establish_connection(database_config)
         ActiveRecord::Migration.current_shard = connection_name
-        migrate_without_turntable(*args)
+        super(*args)
       end
       ActiveRecord::Base.establish_connection config
       ActiveRecord::Base.clear_active_connections!
