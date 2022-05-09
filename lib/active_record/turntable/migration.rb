@@ -120,34 +120,34 @@ module ActiveRecord::Turntable::Migration
 
     def up(target_version = nil)
       result = super
-
-      ActiveRecord::Tasks::DatabaseTasks.each_current_turntable_cluster_connected(current_environment) do |name, configuration|
-        puts "[turntable] *** Migrating database: #{configuration['database']}(Shard: #{name})"
-        super(target_version)
-      end
-
+      #
+      # ActiveRecord::Tasks::DatabaseTasks.each_current_turntable_cluster_connected(current_environment) do |name, configuration|
+      #   puts "[turntable] *** Migrating database: #{configuration['database']}(Shard: #{name})"
+      #   super(target_version)
+      # end
+      #
       result
     end
 
     def down(target_version = nil)
       result = super
-
-      ActiveRecord::Tasks::DatabaseTasks.each_current_turntable_cluster_connected(current_environment) do |name, configuration|
-        puts "[turntable] *** Migrating database: #{configuration['database']}(Shard: #{name})"
-        super(target_version)
-      end
-
+      #
+      # ActiveRecord::Tasks::DatabaseTasks.each_current_turntable_cluster_connected(current_environment) do |name, configuration|
+      #   puts "[turntable] *** Migrating database: #{configuration['database']}(Shard: #{name})"
+      #   super(target_version)
+      # end
+      #
       result
     end
 
     def run(direction, target_version)
       result = super
-
-      ActiveRecord::Tasks::DatabaseTasks.each_current_turntable_cluster_connected(current_environment) do |name, configuration|
-        puts "[turntable] *** Migrating database: #{configuration['database']}(Shard: #{name})"
-        super(target_version)
-      end
-
+      #
+      # ActiveRecord::Tasks::DatabaseTasks.each_current_turntable_cluster_connected(current_environment) do |name, configuration|
+      #   puts "[turntable] *** Migrating database: #{configuration['database']}(Shard: #{name})"
+      #   super(target_version)
+      # end
+      #
       result
     end
   end
