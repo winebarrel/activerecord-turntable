@@ -7,6 +7,8 @@ module ActiveRecord::Turntable
     Padrino.before_load do
       ActiveRecord::Base.send(:include, ActiveRecord::Turntable)
 
+      ActiveRecord::Base.reset_turntable_configuration(Configuration.load(ActiveRecord::Base.turntable_configuration_file, Padrino.env))
+
       require 'generators/padrino/turntable/install_generators'
     end
     # # Swap QueryCache Middleware
