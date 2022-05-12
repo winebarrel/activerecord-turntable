@@ -67,7 +67,7 @@ module ActiveRecord::Turntable::Migration
       end
       ActiveRecord::Base.clear_active_connections!
       ActiveRecord::Base.establish_connection config
-      ActiveRecord::Migration.current_shard = "master"
+      ActiveRecord::Migration.current_shard = nil
     end
   end
 
