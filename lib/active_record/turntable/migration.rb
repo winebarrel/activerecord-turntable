@@ -4,7 +4,7 @@ module ActiveRecord::Turntable::Migration
   included do
     extend ShardDefinition
     prepend OverrideMethods
-    class_attribute :target_shards, :current_shard
+    class_attribute :target_shards, :current_shard, :target_seqs
     ::ActiveRecord::ConnectionAdapters::AbstractAdapter.include(SchemaStatementsExt)
     ::ActiveRecord::Migration::CommandRecorder.include(CommandRecorder)
     if ActiveRecord::Turntable::Util.ar52_or_later?
