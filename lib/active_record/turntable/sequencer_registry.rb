@@ -16,7 +16,7 @@ module ActiveRecord::Turntable
     end
 
     def release!
-      @sequencers.each(&:release!)
+      @sequencers.each_value(&:release!)
     end
 
     def [](name)

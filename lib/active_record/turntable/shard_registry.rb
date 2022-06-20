@@ -25,7 +25,7 @@ module ActiveRecord::Turntable
 
     def release!
       shards.each do |shard|
-        shard.connection_pool.clear_all_connections!
+        shard.connection_pool.release_connection
       end
     end
 

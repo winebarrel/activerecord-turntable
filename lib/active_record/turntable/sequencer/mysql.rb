@@ -16,7 +16,7 @@ module ActiveRecord::Turntable
       end
 
       def release!
-        @shard.connection_pool.clear_all_connections!
+        @shard.connection_pool.release_connection
       end
 
        # mysql だけ offset を指定できるようにします
