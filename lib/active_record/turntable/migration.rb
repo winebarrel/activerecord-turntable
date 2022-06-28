@@ -33,16 +33,16 @@ module ActiveRecord::Turntable::Migration
 
   module OverrideMethods
     def announce(message)
-      super("#{message} - Shard: #{current_shard}")
+      super("#{message} - Shard: #{self.current_shard}")
     end
 
     def exec_migration(*args)
-      super(*args) if target_shard?(current_shard)
+      super(*args) if target_shard?(self.current_shard)
     end
 
     def target_shard?(shard_name)
       return false if shard_name.present? && target_shards.blank?
-      shard_name.nil? or target_shards.blank? or target_shards.include?(shard_name)
+      shard_name.nil? or target_shards.blank? or target_shards.include?(shard_name) or target_seqs.include?(shard_name)
     end
 
     def migrate(*args)
@@ -57,13 +57,13 @@ module ActiveRecord::Turntable::Migration
         next if database_config["database"].blank?
         ActiveRecord::Base.clear_active_connections!
         ActiveRecord::Base.establish_connection(database_config)
-        current_shard_name = connection_name == "master" ? nil : connection_name
-        ActiveRecord::Migration.current_shard = current_shard_name
+        current_shard_name = connection_name == :master ? nil : connection_name
+        self.current_shard = current_shard_name
         super(*args)
       end
       ActiveRecord::Base.clear_active_connections!
       ActiveRecord::Base.establish_connection config
-      ActiveRecord::Migration.current_shard = nil
+      self.current_shard = nil
     end
   end
 
