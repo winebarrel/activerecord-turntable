@@ -57,7 +57,8 @@ module ActiveRecord::Turntable::Migration
         next if database_config["database"].blank?
         ActiveRecord::Base.clear_active_connections!
         ActiveRecord::Base.establish_connection(database_config)
-        ActiveRecord::Migration.current_shard = connection_name
+        current_shard_name = connection_name == "master" ? nil : connection_name
+        ActiveRecord::Migration.current_shard = current_shard_name
         super(*args)
       end
       ActiveRecord::Base.clear_active_connections!
