@@ -18,6 +18,16 @@ describe ActiveRecord::Turntable::ConfigurationMethods do
       ActiveRecord::Base.turntable_configuration_file = nil
       is_expected.to eq(File.join(rails_root, "config/turntable.yml"))
     end
+
+    let(:padrino_root) { "/path/to/padrino_root" }
+
+    it "returns Padrino.root/config/turntable.yml default" do
+      stub_const("Padrino", Class.new)
+      allow(Padrino).to receive(:root) { padrino_root }
+      ActiveRecord::Base.turntable_configuration_file = nil
+      is_expected.to eq(File.join(padrino_root, "config/turntable.yml"))
+    end
+
   end
 
   context "#turntable_configuration" do
