@@ -19,8 +19,15 @@ require "webmock/rspec"
 require "timecop"
 require "pry-byebug"
 require "factory_bot"
-require "faker"
+# Change use_parent_strategy, factory_bot v5
+# https://github.com/thoughtbot/factory_bot/commit/d0208eda9c65cbc476a02d2f7503234195610005
+factory_bot_current_version = Gem::Version.create(FactoryBot::VERSION)
+factory_bot_v5_version = Gem::Version.create("5.0.0")
+if factory_bot_current_version >= factory_bot_v5_version
+  FactoryBot.use_parent_strategy = false
+end
 
+require "faker"
 require "coveralls"
 Coveralls.wear!
 
