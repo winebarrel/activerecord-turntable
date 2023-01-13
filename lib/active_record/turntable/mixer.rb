@@ -37,6 +37,17 @@ module ActiveRecord::Turntable
 
       case tree
       when SQLTree::Node::SelectQuery
+
+        # Support activerecord-import version ">=1.0.7"
+        # ref: https://github.com/zdennis/activerecord-import/pull/706
+        # SHOW VARIABLES LIKE 'name'
+        if tree.where == nil && tree.from == nil && tree.to_sql.include?("max_allowed_packet")
+          # send to default shard
+          return Fader::SpecifiedShard.new(@proxy,
+                                           { @proxy.default_shard => query },
+                                           method, query, *args, &block)
+        end
+
         build_select_fader(tree, method, query, *args, &block)
       when SQLTree::Node::UpdateQuery, SQLTree::Node::DeleteQuery
         build_update_fader(tree, method, query, *args, &block)
