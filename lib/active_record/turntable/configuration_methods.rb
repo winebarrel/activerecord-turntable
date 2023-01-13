@@ -1,7 +1,4 @@
 module ActiveRecord::Turntable
-  RackupFramework = Rails   if defined?(Rails);
-  RackupFramework = Padrino if defined?(Padrino);
-
   module ConfigurationMethods
     DEFAULT_PATH = File.dirname(File.dirname(__FILE__))
 
@@ -18,7 +15,15 @@ module ActiveRecord::Turntable
     deprecate "turntable_config_file=": "use turntable_configuration_file= instead", deprecator: ActiveRecord::Turntable::Deprecation.instance
 
     def turntable_app_root_path
-      defined?(ActiveRecord::Turntable::RackupFramework) ? ActiveRecord::Turntable::RackupFramework.root.to_s : DEFAULT_PATH
+      if defined?(::Padrino.root)
+        return ::Padrino.root.to_s
+      end
+
+      if defined?(::Rails.root)
+        return ::Rails.root.to_s
+      end
+
+      DEFAULT_PATH
     end
 
     def turntable_config
