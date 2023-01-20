@@ -17,13 +17,13 @@ describe ActiveRecord::Turntable::ConfigurationMethods do
 
     subject { ActiveRecord::Base.turntable_configuration_file }
 
-    let(:rails_root) { "/path/to/rails_root" }
+    let(:rackup_framework_root) { "/path/to/rackup_framework_root" }
 
-    it "returns Rails.root/config/turntable.yml default" do
-      stub_const("Rails", Class.new)
-      allow(Rails).to receive(:root) { rails_root }
+    it "returns ActiveRecord::Turntable::RackupFramework.root/config/turntable.yml default" do
+      stub_const("ActiveRecord::Turntable::RackupFramework", Class.new)
+      allow(ActiveRecord::Turntable::RackupFramework).to receive(:root) { rackup_framework_root }
       ActiveRecord::Base.turntable_configuration_file = nil
-      is_expected.to eq(File.join(rails_root, "config/turntable.yml"))
+      is_expected.to eq(File.join(rackup_framework_root, "config/turntable.yml"))
     end
   end
 
