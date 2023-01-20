@@ -1,6 +1,13 @@
 require "spec_helper"
 
 describe ActiveRecord::Turntable::ConfigurationMethods do
+  context "Define ActiveRecord::Turntable::RackupFramework" do
+    subject { ActiveRecord::Turntable::RackupFramework }
+    it "Support Rails" do
+      is_expected.to eq(Rails)
+    end
+  end
+
   context "#turntable_configuration_file" do
     around do |example|
       old_conf_path = ActiveRecord::Base.turntable_configuration_file
