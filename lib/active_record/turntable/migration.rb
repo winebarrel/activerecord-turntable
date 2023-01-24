@@ -33,7 +33,11 @@ module ActiveRecord::Turntable::Migration
 
   module OverrideMethods
     def announce(message)
-      super("#{message} - Shard: #{self.current_shard}")
+      if self.current_shard
+        super("#{message} - Shard: #{self.current_shard}")
+      else
+        super("#{message}")
+      end
     end
 
     def exec_migration(*args)
