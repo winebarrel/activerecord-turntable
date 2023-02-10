@@ -12,7 +12,7 @@ describe ActiveRecord::Turntable::Migration do
       }
       let(:cluster) { ActiveRecord::Base.turntable_configuration.cluster(:user_cluster) }
 
-      it { is_expected.to eq(cluster.shards) }
+      it { is_expected.to eq(cluster.shards.map{ |shard| shard.name }) } # Compatible legacy version AR3
     end
 
     context "With shards definitions" do
