@@ -6,6 +6,4 @@ gem "actionview", "5.1.2"
 
 gem "mysql2", "~> 0.4.4"
 
-gem "mocha", "~> 0.14", require: false
-
 gemspec :path => '../'
